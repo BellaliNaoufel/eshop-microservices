@@ -15,13 +15,15 @@ builder.Services.AddMarten(options =>
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
-app.MapGet("/", () => "hello world");
-app.MapGet("/load", (IQuerySession session) =>
+
+app.MapGet("/", () => "Welcome to Catalog API");
+
+app.MapGet("/product/load", (IQuerySession session) =>
 {
     var products = session.Query<Product>();
     return products.ToList();
 });
-app.MapGet("/create", async (IDocumentSession session) =>
+app.MapGet("/product/create", async (IDocumentSession session) =>
 {
     session.Store(new Product
     {

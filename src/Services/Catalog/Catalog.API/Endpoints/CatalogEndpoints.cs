@@ -9,11 +9,15 @@ namespace Catalog.API.Endpoints
         {
             #region Product
 
-            app.MapGet("/product/load", (IQuerySession session) =>
+            app.MapGet("/product/get", (IQuerySession session) =>
                {
                    var products = session.Query<Product>();
                    return products.ToList();
                });
+            app.MapGet("/product/get/{id}", (Guid id, IQuerySession session) =>
+            {
+                return session.Load<Product>(id);
+            });
             app.MapGet("/product/create", async (IDocumentSession session) =>
             {
                 session.Store(new Product
@@ -36,6 +40,11 @@ namespace Catalog.API.Endpoints
                 });
                 await session.SaveChangesAsync();
                 return "Product Created!";
+            });
+            app.MapGet("/product/delete", async (Guid id, IDocumentSession session) =>
+            {
+                session.Delete<Product>(id);
+                await session.SaveChangesAsync();
             });
 
             #endregion Product

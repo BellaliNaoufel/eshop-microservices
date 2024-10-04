@@ -20,26 +20,31 @@ namespace Catalog.API.Endpoints
             });
             app.MapGet("/product/create", async (IDocumentSession session) =>
             {
-                session.Store(new Product
-                {
-                    Id = Guid.NewGuid(),
-                    Name = $"Product{new Random().Next(1, 100000)}",
-                    Description = $"Description{new Random().Next(1, 1000)}",
-                    Price = (new Random().Next(1, 100000)) / 10,
-                    Categories = new List<Category>
-        {
-            new Category {
-                Id= Guid.NewGuid(),
-                Name=$"Category{new Random().Next(1, 1000)}"
-            },
-             new Category {
-                Id= Guid.NewGuid(),
-                Name=$"Category{new Random().Next(1, 1000)}"
-            }
-        }
-                });
+                session.Store(CreateRandomProduct());
                 await session.SaveChangesAsync();
                 return "Product Created!";
+
+                Product CreateRandomProduct()
+                {
+                    return new Product
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = $"Product{new Random().Next(1, 100000)}",
+                        Description = $"Description{new Random().Next(1, 1000)}",
+                        Price = (new Random().Next(1, 100000)) / 10,
+                        Categories = new List<Category>
+                        {
+                            new Category {
+                                Id= Guid.NewGuid(),
+                                Name=$"Category{new Random().Next(1, 1000)}"
+                            },
+                            new Category {
+                                Id= Guid.NewGuid(),
+                                Name=$"Category{new Random().Next(1, 1000)}"
+                            }
+                        }
+                    };
+                }
             });
             app.MapGet("/product/delete", async (Guid id, IDocumentSession session) =>
             {

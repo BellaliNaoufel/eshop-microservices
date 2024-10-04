@@ -1,6 +1,38 @@
+version: '3.4'
+
 services:
   catalog.api:
+    container_name: catalog.api
     image: ${DOCKER_REGISTRY-}catalogapi
     build:
       context: .
       dockerfile: Services/Catalog/Catalog.API/Dockerfile
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    depends_on:
+      - catalog.db
+
+  catalog.db:
+    container_name: catalog.db
+    environment:
+      POSTGRES_DB: catalogdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: P@ssw0rd
+    image: postgres:latest
+    ports:
+       - 5432:5432
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  catalog.cache:
+    container_name: catalog.cache
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
+
+volumes:
+  postgres_data:
+    external: true
